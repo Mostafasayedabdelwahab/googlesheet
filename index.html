@@ -2,71 +2,79 @@
 <html lang="ar">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>محتوى من جوجل شيت</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض بيانات من Google Sheets</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
+            margin: 20px;
         }
 
-        #content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
         }
 
-        .card {
-            border: 1px solid #ccc;
-            padding: 15px;
-            width: 200px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
         }
 
-        .card strong {
-            color: #333;
+        th {
+            background-color: #f2f2f2;
         }
     </style>
 </head>
 
 <body>
-    <h1>المحتوى من جوجل شيت</h1>
-    <div id="content"></div>
+
+    <h1>بيانات من Google Sheets</h1>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>العمود 1</th>
+                <th>العمود 2</th>
+                <th>العمود 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- البيانات هتظهر هنا -->
+        </tbody>
+    </table>
 
     <script>
-        // رابط جوجل شيت بصيغة CSV
-      const sheetURL = "https://cors-anywhere.herokuapp.com/https://docs.google.com/spreadsheets/d/1O0t7w8eXcg0bvCrFPXYwA3Xlu62SZC2010HXsryFE1M/export?format=csv";
+        // رابط Google Apps Script Web App
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbyj-0mAUc5aUXpYbDp9KGPh09x6lDADp1AuF-xPohKj__2OKezFIiDw6RpvqzNuEPbZ/exec';
 
-        // جلب البيانات من جوجل شيت
-        fetch(sheetURL)
-            .then((response) => response.text())
-            .then((csv) => {
-                const rows = csv
-                    .trim()
-                    .split("\n")
-                    .map((row) => row.split(","));
-                const contentDiv = document.getElementById("content");
-                const headers = rows[0]; // العناوين
-                const data = rows.slice(1); // البيانات
+        // جلب البيانات من Google Sheets
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                // التحقق من البيانات وجلبها
+                const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
 
-                // إضافة العناصر إلى الصفحة
-                data.forEach((row) => {
-                    const card = document.createElement("div");
-                    card.className = "card";
-                    row.forEach((cell, index) => {
-                        const label = headers[index];
-                        card.innerHTML += `<strong>${label}:</strong> ${cell}<br>`;
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.textContent = cell;
+                        tr.appendChild(td);
                     });
-                    contentDiv.appendChild(card);
+                    tableBody.appendChild(tr);
                 });
             })
-            .catch((error) => {
-                console.error("حدث خطأ أثناء تحميل البيانات:", error);
+            .catch(error => {
+                console.error('حدث خطأ أثناء تحميل البيانات:', error);
+                alert('حدث خطأ أثناء تحميل البيانات. يرجى المحاولة مرة أخرى.');
             });
     </script>
+
 </body>
 
 </html>
