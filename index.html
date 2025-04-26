@@ -53,31 +53,41 @@
         const apiUrl = 'https://script.google.com/macros/s/AKfycbyj-0mAUc5aUXpYbDp9KGPh09x6lDADp1AuF-xPohKj__2OKezFIiDw6RpvqzNuEPbZ/exec';
 
      
+    
         // جلب البيانات من Google Sheets
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
-                // التأكد من شكل البيانات قبل استخدامها
+                // التأكد من شكل البيانات
                 const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
 
-                // التأكد إذا كانت البيانات عبارة عن مصفوفة
+                // التأكد من أن البيانات هي مصفوفة من الكائنات
                 if (Array.isArray(data)) {
-                    data.forEach(row => {
-                        // التأكد من أن كل صف هو مصفوفة وليس كائن
-                        if (Array.isArray(row)) {
+                    data.forEach(item => {
+                        // التأكد من أن كل عنصر هو كائن وليس مصفوفة
+                        if (typeof item === 'object') {
                             const tr = document.createElement('tr');
-                            row.forEach(cell => {
-                                const td = document.createElement('td');
-                                td.textContent = cell;
-                                tr.appendChild(td);
-                            });
+
+                            // عرض البيانات في الخلايا
+                            const tdTitle = document.createElement('td');
+                            tdTitle.textContent = item.title || 'غير متوفر';
+                            tr.appendChild(tdTitle);
+
+                            const tdContent = document.createElement('td');
+                            tdContent.textContent = item.content || 'غير متوفر';
+                            tr.appendChild(tdContent);
+
+                            const tdDate = document.createElement('td');
+                            tdDate.textContent = new Date(item.date).toLocaleDateString() || 'غير متوفر';
+                            tr.appendChild(tdDate);
+
                             tableBody.appendChild(tr);
                         } else {
-                            console.error('الصف غير صالح:', row);
+                            console.error('العنصر غير صالح:', item);
                         }
                     });
                 } else {
-                    console.error('البيانات المسترجعة ليست مصفوفة.');
+                    console.error('البيانات المسترجعة ليست مصفوفة من الكائنات.');
                 }
             })
             .catch(error => {
