@@ -54,21 +54,21 @@
 
      
     
-        // جلب البيانات من Google Sheets
-        fetch(apiUrl)
+     fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
-                // التأكد من شكل البيانات
+                // التحقق من البيانات
+                console.log(data);
+
                 const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
 
                 // التأكد من أن البيانات هي مصفوفة من الكائنات
                 if (Array.isArray(data)) {
                     data.forEach(item => {
-                        // التأكد من أن كل عنصر هو كائن وليس مصفوفة
                         if (typeof item === 'object') {
                             const tr = document.createElement('tr');
 
-                            // عرض البيانات في الخلايا
+                            // عرض البيانات
                             const tdTitle = document.createElement('td');
                             tdTitle.textContent = item.title || 'غير متوفر';
                             tr.appendChild(tdTitle);
@@ -94,6 +94,7 @@
                 console.error('حدث خطأ أثناء تحميل البيانات:', error);
                 alert('حدث خطأ أثناء تحميل البيانات. يرجى المحاولة مرة أخرى.');
             });
+
     </script>
 
 </body>
