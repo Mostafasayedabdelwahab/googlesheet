@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>محتوى من جوجل شيت</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            width: 200px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card strong {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>المحتوى من جوجل شيت</h1>
+    <div id="content"></div>
+
+    <script>
+        // رابط جوجل شيت بصيغة CSV
+        const sheetURL =
+            "https://docs.google.com/spreadsheets/d/1O0t7w8eXcg0bvCrFPXYwA3Xlu62SZC2010HXsryFE1M/export?format=csv";
+
+        // جلب البيانات من جوجل شيت
+        fetch(sheetURL)
+            .then((response) => response.text())
+            .then((csv) => {
+                const rows = csv
+                    .trim()
+                    .split("\n")
+                    .map((row) => row.split(","));
+                const contentDiv = document.getElementById("content");
+                const headers = rows[0]; // العناوين
+                const data = rows.slice(1); // البيانات
+
+                // إضافة العناصر إلى الصفحة
+                data.forEach((row) => {
+                    const card = document.createElement("div");
+                    card.className = "card";
+                    row.forEach((cell, index) => {
+                        const label = headers[index];
+                        card.innerHTML += `<strong>${label}:</strong> ${cell}<br>`;
+                    });
+                    contentDiv.appendChild(card);
+                });
+            })
+            .catch((error) => {
+                console.error("حدث خطأ أثناء تحميل البيانات:", error);
+            });
+    </script>
+</body>
+
+</html>
