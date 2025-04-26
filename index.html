@@ -50,35 +50,33 @@
 
     <script>
         // رابط Google Apps Script Web App
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbyj-0mAUc5aUXpYbDp9KGPh09x6lDADp1AuF-xPohKj__2OKezFIiDw6RpvqzNuEPbZ/exec';
+            const apiUrl = 'https://script.google.com/macros/s/AKfycbyj-0mAUc5aUXpYbDp9KGPh09x6lDADp1AuF-xPohKj__2OKezFIiDw6RpvqzNuEPbZ/exec';
 
-     
-    
-     fetch(apiUrl)
+        fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
-                // التحقق من البيانات
+                // التحقق من البيانات في الكونسول قبل عرضها في الجدول
                 console.log(data);
 
                 const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
 
-                // التأكد من أن البيانات هي مصفوفة من الكائنات
                 if (Array.isArray(data)) {
                     data.forEach(item => {
-                        if (typeof item === 'object') {
+                        // التأكد من أن العنصر هو كائن يحتوي على الخصائص
+                        if (typeof item === 'object' && item !== null) {
                             const tr = document.createElement('tr');
 
-                            // عرض البيانات
+                            // التحقق من أن title و content موجودين في الكائن
                             const tdTitle = document.createElement('td');
-                            tdTitle.textContent = item.title || 'غير متوفر';
+                            tdTitle.textContent = item.title?.trim() || 'غير متوفر'; // إزالة الفراغات
                             tr.appendChild(tdTitle);
 
                             const tdContent = document.createElement('td');
-                            tdContent.textContent = item.content || 'غير متوفر';
+                            tdContent.textContent = item.content?.trim() || 'غير متوفر'; // إزالة الفراغات
                             tr.appendChild(tdContent);
 
                             const tdDate = document.createElement('td');
-                            tdDate.textContent = new Date(item.date).toLocaleDateString() || 'غير متوفر';
+                            tdDate.textContent = item.date ? new Date(item.date).toLocaleDateString() : 'غير متوفر';
                             tr.appendChild(tdDate);
 
                             tableBody.appendChild(tr);
@@ -94,7 +92,6 @@
                 console.error('حدث خطأ أثناء تحميل البيانات:', error);
                 alert('حدث خطأ أثناء تحميل البيانات. يرجى المحاولة مرة أخرى.');
             });
-
     </script>
 
 </body>
