@@ -52,22 +52,33 @@
         // رابط Google Apps Script Web App
         const apiUrl = 'https://script.google.com/macros/s/AKfycbyj-0mAUc5aUXpYbDp9KGPh09x6lDADp1AuF-xPohKj__2OKezFIiDw6RpvqzNuEPbZ/exec';
 
+     
         // جلب البيانات من Google Sheets
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
-                // التحقق من البيانات وجلبها
+                // التأكد من شكل البيانات قبل استخدامها
                 const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
 
-                data.forEach(row => {
-                    const tr = document.createElement('tr');
-                    row.forEach(cell => {
-                        const td = document.createElement('td');
-                        td.textContent = cell;
-                        tr.appendChild(td);
+                // التأكد إذا كانت البيانات عبارة عن مصفوفة
+                if (Array.isArray(data)) {
+                    data.forEach(row => {
+                        // التأكد من أن كل صف هو مصفوفة وليس كائن
+                        if (Array.isArray(row)) {
+                            const tr = document.createElement('tr');
+                            row.forEach(cell => {
+                                const td = document.createElement('td');
+                                td.textContent = cell;
+                                tr.appendChild(td);
+                            });
+                            tableBody.appendChild(tr);
+                        } else {
+                            console.error('الصف غير صالح:', row);
+                        }
                     });
-                    tableBody.appendChild(tr);
-                });
+                } else {
+                    console.error('البيانات المسترجعة ليست مصفوفة.');
+                }
             })
             .catch(error => {
                 console.error('حدث خطأ أثناء تحميل البيانات:', error);
